@@ -1,6 +1,5 @@
 import React from 'react'
 import {Pressable, StyleProp, StyleSheet, View, ViewStyle} from 'react-native'
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'
 import {Text} from '../util/text/Text'
 import {RichText} from '#/components/RichText'
 import {usePalette} from 'lib/hooks/usePalette'
@@ -25,6 +24,10 @@ import {FeedLoadingPlaceholder} from '#/view/com/util/LoadingPlaceholder'
 import {useTheme} from '#/alf'
 import * as Prompt from '#/components/Prompt'
 import {useNavigationDeduped} from 'lib/hooks/useNavigationDeduped'
+import {Trash_Stroke2_Corner0_Rounded as Trash} from '#/components/icons/Trash'
+import {Button} from '#/components/Button'
+import {PlusLarge_Stroke2_Corner0_Rounded as Plus} from '#/components/icons/Plus'
+import {atoms as a} from '#/alf'
 
 export function FeedSourceCard({
   feedUri,
@@ -34,6 +37,7 @@ export function FeedSourceCard({
   showLikes = false,
   pinOnSave = false,
   showMinimalPlaceholder,
+  truncateText,
 }: {
   feedUri: string
   style?: StyleProp<ViewStyle>
@@ -42,6 +46,7 @@ export function FeedSourceCard({
   showLikes?: boolean
   pinOnSave?: boolean
   showMinimalPlaceholder?: boolean
+  truncateText?: boolean
 }) {
   const {data: preferences} = usePreferencesQuery()
   const {data: feed} = useFeedSourceInfoQuery({uri: feedUri})
@@ -57,6 +62,7 @@ export function FeedSourceCard({
       showLikes={showLikes}
       pinOnSave={pinOnSave}
       showMinimalPlaceholder={showMinimalPlaceholder}
+      truncateText={truncateText}
     />
   )
 }
@@ -71,6 +77,7 @@ export function FeedSourceCardLoaded({
   showLikes = false,
   pinOnSave = false,
   showMinimalPlaceholder,
+  truncateText = false,
 }: {
   feedUri: string
   feed?: FeedSourceInfo
@@ -81,6 +88,7 @@ export function FeedSourceCardLoaded({
   showLikes?: boolean
   pinOnSave?: boolean
   showMinimalPlaceholder?: boolean
+  truncateText?: boolean
 }) {
   const t = useTheme()
   const pal = usePalette('default')
@@ -166,21 +174,17 @@ export function FeedSourceCardLoaded({
         )}
 
         {showSaveBtn && (
-          <Pressable
+          <Button
             testID={`feed-${feedUri}-toggleSave`}
             disabled={isRemovePending}
-            accessibilityRole="button"
-            accessibilityLabel={_(msg`Remove from my feeds`)}
-            accessibilityHint=""
+            label={_(msg`Remove from my feeds`)}
             onPress={onToggleSaved}
-            hitSlop={15}
-            style={styles.btn}>
-            <FontAwesomeIcon
-              icon={['far', 'trash-can']}
-              size={19}
-              color={pal.colors.icon}
-            />
-          </Pressable>
+            shape="round"
+            size="tiny"
+            variant="ghost"
+            style={[{height: 36, width: 36}]}>
+            <Trash size="md" fill={t.palette.contrast_500} />
+          </Button>
         )}
       </View>
     )
@@ -210,10 +214,12 @@ export function FeedSourceCardLoaded({
             <UserAvatar type="algo" size={36} avatar={feed.avatar} />
           </View>
           <View style={[styles.headerTextContainer]}>
-            <Text style={[pal.text, s.bold]} numberOfLines={3}>
+            <Text
+              style={[pal.text, s.bold]}
+              numberOfLines={truncateText ? 1 : 3}>
               {feed.displayName}
             </Text>
-            <Text style={[pal.textLight]} numberOfLines={3}>
+            <Text style={[pal.textLight]} numberOfLines={truncateText ? 1 : 3}>
               {feed.type === 'feed' ? (
                 <Trans>Feed by {sanitizeHandle(feed.creatorHandle, '@')}</Trans>
               ) : (
@@ -223,34 +229,26 @@ export function FeedSourceCardLoaded({
           </View>
 
           {showSaveBtn && feed.type === 'feed' && (
-            <View style={[s.justifyCenter]}>
-              <Pressable
+            <View style={[a.justify_center]}>
+              <Button
                 testID={`feed-${feed.displayName}-toggleSave`}
                 disabled={isSavePending || isPinPending || isRemovePending}
-                accessibilityRole="button"
-                accessibilityLabel={
+                label={
                   isSaved
                     ? _(msg`Remove from my feeds`)
                     : _(msg`Add to my feeds`)
                 }
-                accessibilityHint=""
                 onPress={onToggleSaved}
-                hitSlop={15}
-                style={styles.btn}>
+                shape="round"
+                size="tiny"
+                variant="ghost"
+                style={[{height: 36, width: 36}]}>
                 {isSaved ? (
-                  <FontAwesomeIcon
-                    icon={['far', 'trash-can']}
-                    size={19}
-                    color={pal.colors.icon}
-                  />
+                  <Trash size="md" fill={t.palette.contrast_500} />
                 ) : (
-                  <FontAwesomeIcon
-                    icon="plus"
-                    size={18}
-                    color={pal.colors.link}
-                  />
+                  <Plus size="md" />
                 )}
-              </Pressable>
+              </Button>
             </View>
           )}
         </View>
