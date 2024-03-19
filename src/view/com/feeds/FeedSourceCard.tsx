@@ -288,7 +288,7 @@ export function FeedSourceCardLoaded({
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 18,
-    paddingVertical: 20,
+    paddingVertical: 14,
     flexDirection: 'column',
     flex: 1,
     borderTopWidth: 1,

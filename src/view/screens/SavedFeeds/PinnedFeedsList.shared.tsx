@@ -76,7 +76,7 @@ export function ListItem({
       <FeedSourceCard
         key={feedUri}
         feedUri={feedUri}
-        style={a.border_t_0}
+        style={[a.border_t_0, showPinBtn && a.pr_0]}
         showSaveBtn={showSaveBtn}
         showMinimalPlaceholder
         truncateText={truncateText}

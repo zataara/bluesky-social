@@ -312,6 +312,9 @@ export const atoms = {
   /*
    * Padding
    */
+  p_0: {
+    padding: 0,
+  },
   p_2xs: {
     padding: tokens.space._2xs,
   },
@@ -341,6 +344,10 @@ export const atoms = {
   },
   p_5xl: {
     padding: tokens.space._5xl,
+  },
+  px_0: {
+    paddingLeft: 0,
+    paddingRight: 0,
   },
   px_2xs: {
     paddingLeft: tokens.space._2xs,
@@ -382,6 +389,10 @@ export const atoms = {
     paddingLeft: tokens.space._5xl,
     paddingRight: tokens.space._5xl,
   },
+  py_0: {
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
   py_2xs: {
     paddingTop: tokens.space._2xs,
     paddingBottom: tokens.space._2xs,
@@ -422,6 +433,9 @@ export const atoms = {
     paddingTop: tokens.space._5xl,
     paddingBottom: tokens.space._5xl,
   },
+  pt_0: {
+    paddingTop: 0,
+  },
   pt_2xs: {
     paddingTop: tokens.space._2xs,
   },
@@ -451,6 +465,9 @@ export const atoms = {
   },
   pt_5xl: {
     paddingTop: tokens.space._5xl,
+  },
+  pb_0: {
+    paddingBottom: 0,
   },
   pb_2xs: {
     paddingBottom: tokens.space._2xs,
@@ -482,6 +499,9 @@ export const atoms = {
   pb_5xl: {
     paddingBottom: tokens.space._5xl,
   },
+  pl_0: {
+    paddingLeft: 0,
+  },
   pl_2xs: {
     paddingLeft: tokens.space._2xs,
   },
@@ -511,6 +531,9 @@ export const atoms = {
   },
   pl_5xl: {
     paddingLeft: tokens.space._5xl,
+  },
+  pr_0: {
+    paddingRight: 0,
   },
   pr_2xs: {
     paddingRight: tokens.space._2xs,
@@ -550,6 +573,9 @@ export const atoms = {
     marginLeft: 'auto',
     marginRight: 'auto',
   },
+  m_0: {
+    margin: 0,
+  },
   m_2xs: {
     margin: tokens.space._2xs,
   },
@@ -579,6 +605,10 @@ export const atoms = {
   },
   m_5xl: {
     margin: tokens.space._5xl,
+  },
+  mx_0: {
+    marginLeft: 0,
+    marginRight: 0,
   },
   mx_2xs: {
     marginLeft: tokens.space._2xs,
@@ -620,6 +650,10 @@ export const atoms = {
     marginLeft: tokens.space._5xl,
     marginRight: tokens.space._5xl,
   },
+  my_0: {
+    marginTop: 0,
+    marginBottom: 0,
+  },
   my_2xs: {
     marginTop: tokens.space._2xs,
     marginBottom: tokens.space._2xs,
@@ -660,6 +694,9 @@ export const atoms = {
     marginTop: tokens.space._5xl,
     marginBottom: tokens.space._5xl,
   },
+  mt_0: {
+    marginTop: 0,
+  },
   mt_2xs: {
     marginTop: tokens.space._2xs,
   },
@@ -689,6 +726,9 @@ export const atoms = {
   },
   mt_5xl: {
     marginTop: tokens.space._5xl,
+  },
+  mb_0: {
+    marginBottom: 0,
   },
   mb_2xs: {
     marginBottom: tokens.space._2xs,
@@ -720,6 +760,9 @@ export const atoms = {
   mb_5xl: {
     marginBottom: tokens.space._5xl,
   },
+  ml_0: {
+    marginLeft: 0,
+  },
   ml_2xs: {
     marginLeft: tokens.space._2xs,
   },
@@ -749,6 +792,9 @@ export const atoms = {
   },
   ml_5xl: {
     marginLeft: tokens.space._5xl,
+  },
+  mr_0: {
+    marginRight: 0,
   },
   mr_2xs: {
     marginRight: tokens.space._2xs,
