@@ -18,7 +18,7 @@ import {
 } from '#/state/queries/preferences'
 import {atoms as a, useTheme} from '#/alf'
 import {Text} from '#/components/Typography'
-import {ListItem, SectionTitle} from './PinnedFeedsList.shared'
+import {ListItem, SectionTitle} from './PinnedFeedsListItem'
 import {EmptyState} from '#/components/EmptyState'
 import {InlineLink} from '#/components/Link'
 import {PinnedFeedsList} from './PinnedFeedsList'

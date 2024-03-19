@@ -5,7 +5,7 @@ import {useLingui} from '@lingui/react'
 import {LayoutAnimation, View} from 'react-native'
 
 import {useSetSaveFeedsMutation} from '#/state/queries/preferences'
-import {ListItem, SectionTitle} from './PinnedFeedsList.shared'
+import {ListItem, SectionTitle} from './PinnedFeedsListItem'
 import {atoms as a} from '#/alf'
 import {
   ChevronBottom_Stroke2_Corner0_Rounded as ChevronBottom,
