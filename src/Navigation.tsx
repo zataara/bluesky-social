@@ -421,6 +421,7 @@ function HomeTabNavigator() {
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
+        fullScreenSwipeShadowEnabled: true,
         headerShown: false,
         contentStyle: t.atoms.bg,
       }}>
@@ -440,6 +441,7 @@ function SearchTabNavigator() {
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
+        fullScreenSwipeShadowEnabled: true,
         headerShown: false,
         contentStyle: t.atoms.bg,
       }}>
@@ -458,6 +460,7 @@ function NotificationsTabNavigator() {
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
+        fullScreenSwipeShadowEnabled: true,
         headerShown: false,
         contentStyle: t.atoms.bg,
       }}>
@@ -480,6 +483,7 @@ function MyProfileTabNavigator() {
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
+        fullScreenSwipeShadowEnabled: true,
         headerShown: false,
         contentStyle: t.atoms.bg,
       }}>
@@ -506,6 +510,7 @@ function MessagesTabNavigator() {
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
+        fullScreenSwipeShadowEnabled: true,
         headerShown: false,
         contentStyle: t.atoms.bg,
       }}>
@@ -540,6 +545,7 @@ const FlatNavigator = () => {
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
+        fullScreenSwipeShadowEnabled: true,
         headerShown: false,
         contentStyle: t.atoms.bg,
       }}>
