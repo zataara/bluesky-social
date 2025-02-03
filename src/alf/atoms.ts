@@ -31,6 +31,18 @@ export const atoms = {
     right: 0,
     bottom: 0,
   },
+  top_0: {
+    top: 0,
+  },
+  left_0: {
+    left: 0,
+  },
+  right_0: {
+    right: 0,
+  },
+  bottom_0: {
+    bottom: 0,
+  },
   z_10: {
     zIndex: 10,
   },

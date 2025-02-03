@@ -7,6 +7,11 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
+import {
+  SafeAreaProvider,
+  withSafeAreaInsets,
+  WithSafeAreaInsetsProps,
+} from 'react-native-safe-area-context'
 import {requireNativeModule, requireNativeViewManager} from 'expo-modules-core'
 
 import {BottomSheetState, BottomSheetViewProps} from './BottomSheet.types'
@@ -24,20 +29,25 @@ const NativeView: React.ComponentType<
 
 const NativeModule = requireNativeModule('BottomSheet')
 
-const isIOS15 = Platform.OS === 'ios' && Number(Platform.Version) < 16
+const isIOS15 =
+  Platform.OS === 'ios' &&
+  // semvar - can be 3 segments, so can't use Number(Platform.Version)
+  Number(Platform.Version.split('.').at(0)) < 16
 
-export class BottomSheetNativeComponent extends React.Component<
-  BottomSheetViewProps,
-  {
-    open: boolean
-    viewHeight?: number
-  }
+type BottomSheetViewState = {
+  open: boolean
+  viewHeight?: number
+}
+
+class BottomSheetNativeComponentInner extends React.Component<
+  BottomSheetViewProps & WithSafeAreaInsetsProps,
+  BottomSheetViewState
 > {
   ref = React.createRef<any>()
 
   static contextType = PortalContext
 
-  constructor(props: BottomSheetViewProps) {
+  constructor(props: BottomSheetViewProps & WithSafeAreaInsetsProps) {
     super(props)
     this.state = {
       open: false,
@@ -84,6 +94,8 @@ export class BottomSheetNativeComponent extends React.Component<
     const {children, backgroundColor, ...rest} = this.props
     const cornerRadius = rest.cornerRadius ?? 0
 
+    const adjustedScreenHeight = screenHeight - this.props.insets.top
+
     let extraStyles
     if (isIOS15 && this.state.viewHeight) {
       const {viewHeight} = this.state
@@ -105,16 +117,13 @@ export class BottomSheetNativeComponent extends React.Component<
           ref={this.ref}
           style={{
             position: 'absolute',
-            height: screenHeight,
+            height: adjustedScreenHeight,
             width: '100%',
           }}
           containerBackgroundColor={backgroundColor}>
-          <View
+          <SafeAreaProvider
             style={[
-              {
-                flex: 1,
-                backgroundColor,
-              },
+              {backgroundColor},
               Platform.OS === 'android' && {
                 borderTopLeftRadius: cornerRadius,
                 borderTopRightRadius: cornerRadius,
@@ -129,9 +138,18 @@ export class BottomSheetNativeComponent extends React.Component<
               }}>
               <BottomSheetPortalProvider>{children}</BottomSheetPortalProvider>
             </View>
-          </View>
+          </SafeAreaProvider>
         </NativeView>
       </Portal>
     )
   }
 }
+
+export type BottomSheetNativeComponent =
+  React.ComponentType<BottomSheetViewProps> & {
+    present: () => void
+    dismiss: () => void
+  }
+export const BottomSheetNativeComponent = withSafeAreaInsets(
+  BottomSheetNativeComponentInner,
+)
