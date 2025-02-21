@@ -34,6 +34,7 @@ type SubmitTask = {
 export type SignupState = {
   hasPrev: boolean
   activeStep: SignupStep
+  screenTransitionDirection: 'Forward' | 'Backward'
 
   serviceUrl: string
   serviceDescription?: ServiceDescription
@@ -69,6 +70,7 @@ export type SignupAction =
 export const initialState: SignupState = {
   hasPrev: false,
   activeStep: SignupStep.INFO,
+  screenTransitionDirection: 'Forward',
 
   serviceUrl: DEFAULT_SERVICE,
   serviceDescription: undefined,
@@ -99,7 +101,7 @@ export function reducer(s: SignupState, a: SignupAction): SignupState {
   switch (a.type) {
     case 'prev': {
       if (s.activeStep !== SignupStep.INFO) {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+        next.screenTransitionDirection = 'Backward'
         next.activeStep--
         next.error = ''
       }
@@ -107,7 +109,7 @@ export function reducer(s: SignupState, a: SignupAction): SignupState {
     }
     case 'next': {
       if (s.activeStep !== SignupStep.CAPTCHA) {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+        next.screenTransitionDirection = 'Forward'
         next.activeStep++
         next.error = ''
       }
