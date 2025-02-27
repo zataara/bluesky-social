@@ -1,4 +1,4 @@
-import React, {memo, useCallback} from 'react'
+import {memo, useCallback, useMemo} from 'react'
 import {
   Platform,
   type PressableProps,
@@ -121,7 +121,7 @@ let PostMenuItems = ({
   const postUri = post.uri
   const postCid = post.cid
   const postAuthor = useProfileShadow(post.author)
-  const quoteEmbed = React.useMemo(() => {
+  const quoteEmbed = useMemo(() => {
     if (!currentAccount || !post.embed) return
     return getMaybeDetachedQuoteEmbed({
       viewerDid: currentAccount.did,
@@ -155,7 +155,7 @@ let PostMenuItems = ({
     rootPostUri: rootUri,
   })
 
-  const href = React.useMemo(() => {
+  const href = useMemo(() => {
     const urip = new AtUri(postUri)
     return makeProfileLink(postAuthor, 'post', urip.rkey)
   }, [postUri, postAuthor])
@@ -165,7 +165,7 @@ let PostMenuItems = ({
     langPrefs.primaryLanguage,
   )
 
-  const onDeletePost = React.useCallback(() => {
+  const onDeletePost = useCallback(() => {
     deletePostMutate({uri: postUri}).then(
       () => {
         Toast.show(_(msg`Post deleted`))
@@ -202,7 +202,7 @@ let PostMenuItems = ({
     _,
   ])
 
-  const onToggleThreadMute = React.useCallback(() => {
+  const onToggleThreadMute = useCallback(() => {
     try {
       if (isThreadMuted) {
         unmuteThread()
@@ -224,28 +224,28 @@ let PostMenuItems = ({
     }
   }, [isThreadMuted, unmuteThread, _, muteThread])
 
-  const onCopyPostText = React.useCallback(() => {
+  const onCopyPostText = useCallback(() => {
     const str = richTextToString(richText, true)
 
     Clipboard.setStringAsync(str)
     Toast.show(_(msg`Copied to clipboard`), 'clipboard-check')
   }, [_, richText])
 
-  const onPressTranslate = React.useCallback(async () => {
+  const onPressTranslate = useCallback(async () => {
     await openLink(translatorUrl, true)
   }, [openLink, translatorUrl])
 
-  const onHidePost = React.useCallback(() => {
+  const onHidePost = useCallback(() => {
     hidePost({uri: postUri})
   }, [postUri, hidePost])
 
-  const hideInPWI = React.useMemo(() => {
+  const hideInPWI = useMemo(() => {
     return !!postAuthor.labels?.find(
       label => label.val === '!no-unauthenticated',
     )
   }, [postAuthor])
 
-  const onPressShowMore = React.useCallback(() => {
+  const onPressShowMore = useCallback(() => {
     feedFeedback.sendInteraction({
       event: 'app.bsky.feed.defs#requestMore',
       item: postUri,
@@ -254,7 +254,7 @@ let PostMenuItems = ({
     Toast.show(_(msg`Feedback sent!`))
   }, [feedFeedback, postUri, postFeedContext, _])
 
-  const onPressShowLess = React.useCallback(() => {
+  const onPressShowLess = useCallback(() => {
     feedFeedback.sendInteraction({
       event: 'app.bsky.feed.defs#requestLess',
       item: postUri,
@@ -263,7 +263,7 @@ let PostMenuItems = ({
     Toast.show(_(msg`Feedback sent!`))
   }, [feedFeedback, postUri, postFeedContext, _])
 
-  const onToggleQuotePostAttachment = React.useCallback(async () => {
+  const onToggleQuotePostAttachment = useCallback(async () => {
     if (!quoteEmbed) return
 
     const action = quoteEmbed.isDetached ? 'reattach' : 'detach'
@@ -291,7 +291,7 @@ let PostMenuItems = ({
     !isAuthor && isRootPostAuthor && !isPostHidden && isReply
   const canDetachQuote = quoteEmbed && quoteEmbed.isOwnedByViewer
 
-  const onToggleReplyVisibility = React.useCallback(async () => {
+  const onToggleReplyVisibility = useCallback(async () => {
     // TODO no threadgate?
     if (!canHideReplyForEveryone) return
 
