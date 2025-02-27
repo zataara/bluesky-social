@@ -1,4 +1,4 @@
-import React, {memo, useCallback} from 'react'
+import {memo, useCallback, useMemo} from 'react'
 import {AtUri} from '@atproto/api'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
@@ -43,12 +43,12 @@ let ShareMenuItems = ({
   const postCid = post.cid
   const postAuthor = useProfileShadow(post.author)
 
-  const href = React.useMemo(() => {
+  const href = useMemo(() => {
     const urip = new AtUri(postUri)
     return makeProfileLink(postAuthor, 'post', urip.rkey)
   }, [postUri, postAuthor])
 
-  const hideInPWI = React.useMemo(() => {
+  const hideInPWI = useMemo(() => {
     return !!postAuthor.labels?.find(
       label => label.val === '!no-unauthenticated',
     )
@@ -57,13 +57,13 @@ let ShareMenuItems = ({
   const showLoggedOutWarning =
     postAuthor.did !== currentAccount?.did && hideInPWI
 
-  const onSharePost = React.useCallback(() => {
+  const onSharePost = useCallback(() => {
     const url = toShareUrl(href)
     shareUrl(url)
     onShareProp()
   }, [href, onShareProp])
 
-  const onSelectChatToShareTo = React.useCallback(
+  const onSelectChatToShareTo = useCallback(
     (conversation: string) => {
       navigation.navigate('MessagesConversation', {
         conversation,
