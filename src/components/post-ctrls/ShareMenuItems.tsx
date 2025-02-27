@@ -17,7 +17,7 @@ import {useDialogControl} from '#/components/Dialog'
 import {SendViaChatDialog} from '#/components/dms/dialogs/ShareViaChatDialog'
 import {ArrowOutOfBox_Stroke2_Corner0_Rounded as ArrowOutOfBoxIcon} from '#/components/icons/ArrowOutOfBox'
 import {ChainLink_Stroke2_Corner0_Rounded as ChainLinkIcon} from '#/components/icons/ChainLink'
-import {CodeBrackets_Stroke2_Corner0_Rounded as CodeBracketsIcon} from '#/components/icons/CodeBrackets'
+import {Clipboard_Stroke2_Corner2_Rounded as ClipboardIcon} from '#/components/icons/Clipboard'
 import {PaperPlane_Stroke2_Corner0_Rounded as PaperPlaneIcon} from '#/components/icons/PaperPlane'
 import * as Menu from '#/components/Menu'
 import * as Prompt from '#/components/Prompt'
@@ -144,7 +144,7 @@ let ShareMenuItems = ({
                 <Menu.ItemText>
                   <Trans>Share post at:// URI</Trans>
                 </Menu.ItemText>
-                <Menu.ItemIcon icon={CodeBracketsIcon} position="right" />
+                <Menu.ItemIcon icon={ClipboardIcon} position="right" />
               </Menu.Item>
               <Menu.Item
                 testID="postAuthorDIDShareBtn"
@@ -153,7 +153,7 @@ let ShareMenuItems = ({
                 <Menu.ItemText>
                   <Trans>Share author DID</Trans>
                 </Menu.ItemText>
-                <Menu.ItemIcon icon={CodeBracketsIcon} position="right" />
+                <Menu.ItemIcon icon={ClipboardIcon} position="right" />
               </Menu.Item>
             </Menu.Group>
           </>

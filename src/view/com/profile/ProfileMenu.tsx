@@ -27,7 +27,7 @@ import * as Toast from '#/view/com/util/Toast'
 import {Button, ButtonIcon} from '#/components/Button'
 import {ArrowOutOfBox_Stroke2_Corner0_Rounded as ArrowOutOfBoxIcon} from '#/components/icons/ArrowOutOfBox'
 import {ChainLink_Stroke2_Corner0_Rounded as ChainLinkIcon} from '#/components/icons/ChainLink'
-import {CodeBrackets_Stroke2_Corner0_Rounded as CodeBracketsIcon} from '#/components/icons/CodeBrackets'
+import {Clipboard_Stroke2_Corner2_Rounded as ClipboardIcon} from '#/components/icons/Clipboard'
 import {DotGrid_Stroke2_Corner0_Rounded as Ellipsis} from '#/components/icons/DotGrid'
 import {Flag_Stroke2_Corner0_Rounded as Flag} from '#/components/icons/Flag'
 import {ListSparkle_Stroke2_Corner0_Rounded as List} from '#/components/icons/ListSparkle'
@@ -355,7 +355,7 @@ let ProfileMenu = ({
                   <Menu.ItemText>
                     <Trans>Copy at:// URI</Trans>
                   </Menu.ItemText>
-                  <Menu.ItemIcon icon={CodeBracketsIcon} />
+                  <Menu.ItemIcon icon={ClipboardIcon} />
                 </Menu.Item>
                 <Menu.Item
                   testID="profileHeaderDropdownShareDIDBtn"
@@ -364,7 +364,7 @@ let ProfileMenu = ({
                   <Menu.ItemText>
                     <Trans>Copy DID</Trans>
                   </Menu.ItemText>
-                  <Menu.ItemIcon icon={CodeBracketsIcon} />
+                  <Menu.ItemIcon icon={ClipboardIcon} />
                 </Menu.Item>
               </Menu.Group>
             </>
