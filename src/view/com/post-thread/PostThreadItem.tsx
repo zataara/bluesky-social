@@ -52,7 +52,7 @@ import {LabelsOnMyPost} from '#/components/moderation/LabelsOnMe'
 import {PostAlerts} from '#/components/moderation/PostAlerts'
 import {PostHider} from '#/components/moderation/PostHider'
 import {AppModerationCause} from '#/components/Pills'
-import {PostCtrls} from '#/components/post-ctrls/PostCtrls'
+import {PostControls} from '#/components/PostControls'
 import * as Prompt from '#/components/Prompt'
 import {RichText} from '#/components/RichText'
 import {SubtleWebHover} from '#/components/SubtleWebHover'
@@ -465,7 +465,7 @@ let PostThreadItemLoaded = ({
                   marginLeft: -5,
                 },
               ]}>
-              <PostCtrls
+              <PostControls
                 big
                 post={post}
                 record={record}
@@ -612,7 +612,7 @@ let PostThreadItemLoaded = ({
                   />
                 </View>
               )}
-              <PostCtrls
+              <PostControls
                 post={post}
                 record={record}
                 richText={richText}
