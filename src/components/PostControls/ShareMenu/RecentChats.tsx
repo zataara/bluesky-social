@@ -44,7 +44,8 @@ export function RecentChats({postUri}: {postUri: string}) {
         style={[a.flex_1, a.pt_2xs]}
         contentContainerStyle={[a.gap_sm, a.px_md]}
         showsHorizontalScrollIndicator={false}
-        fadingEdgeLength={32}>
+        fadingEdgeLength={64}
+        nestedScrollEnabled>
         {convos && convos.length > 0 ? (
           convos.map(convo => {
             const otherMember = convo.members.find(
