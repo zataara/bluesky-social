@@ -20,7 +20,7 @@ export function RecentChats({postUri}: {postUri: string}) {
   const {_} = useLingui()
   const t = useTheme()
   const {currentAccount} = useSession()
-  const {data} = useListConvosQuery()
+  const {data} = useListConvosQuery({status: 'accepted'})
   const convos = data?.pages[0]?.convos?.slice(0, 10)
   const moderationOpts = useModerationOpts()
   const navigation = useNavigation<NavigationProp>()
@@ -85,7 +85,8 @@ export function RecentChats({postUri}: {postUri: string}) {
                     a.text_center,
                     {minHeight: 28},
                   ]}
-                  numberOfLines={2}>
+                  numberOfLines={2}
+                  emoji>
                   {sanitizeDisplayName(
                     otherMember.displayName || otherMember.handle,
                   )}
