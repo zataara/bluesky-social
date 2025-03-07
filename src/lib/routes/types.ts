@@ -1,6 +1,8 @@
 import {NavigationState, PartialState} from '@react-navigation/native'
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
+import {VideoFeedSourceContext} from '#/screens/VideoFeed/types'
+
 export type {NativeStackScreenProps} from '@react-navigation/native-stack'
 
 export type CommonNavigatorParams = {
@@ -10,17 +12,23 @@ export type CommonNavigatorParams = {
   ModerationModlists: undefined
   ModerationMutedAccounts: undefined
   ModerationBlockedAccounts: undefined
+  ModerationInteractionSettings: undefined
   Settings: undefined
   Profile: {name: string; hideBackButton?: boolean}
   ProfileFollowers: {name: string}
   ProfileFollows: {name: string}
   ProfileKnownFollowers: {name: string}
+  ProfileSearch: {name: string; q?: string}
   ProfileList: {name: string; rkey: string}
   PostThread: {name: string; rkey: string}
   PostLikedBy: {name: string; rkey: string}
   PostRepostedBy: {name: string; rkey: string}
   PostQuotes: {name: string; rkey: string}
-  ProfileFeed: {name: string; rkey: string}
+  ProfileFeed: {
+    name: string
+    rkey: string
+    feedCacheKey?: 'discover' | 'explore' | undefined
+  }
   ProfileFeedLikedBy: {name: string; rkey: string}
   ProfileLabelerLikedBy: {name: string}
   Debug: undefined
@@ -48,8 +56,9 @@ export type CommonNavigatorParams = {
   Search: {q?: string}
   Hashtag: {tag: string; author?: string}
   Topic: {topic: string}
-  MessagesConversation: {conversation: string; embed?: string}
+  MessagesConversation: {conversation: string; embed?: string; accept?: true}
   MessagesSettings: undefined
+  MessagesInbox: undefined
   NotificationSettings: undefined
   Feeds: undefined
   Start: {name: string; rkey: string}
@@ -57,6 +66,7 @@ export type CommonNavigatorParams = {
   StarterPackShort: {code: string}
   StarterPackWizard: undefined
   StarterPackEdit: {rkey?: string}
+  VideoFeed: VideoFeedSourceContext
 }
 
 export type BottomTabNavigatorParams = CommonNavigatorParams & {

@@ -8,6 +8,7 @@ import {
   BskyAgent,
   ComAtprotoRepoApplyWrites,
   Facet,
+  Un$Typed,
 } from '@atproto/api'
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import chunk from 'lodash.chunk'
@@ -62,7 +63,7 @@ export function useListCreateMutation() {
         avatar,
       }) {
         if (!currentAccount) {
-          throw new Error('Not logged in')
+          throw new Error('Not signed in')
         }
         if (
           purpose !== 'app.bsky.graph.defs#curatelist' &&
@@ -70,7 +71,7 @@ export function useListCreateMutation() {
         ) {
           throw new Error('Invalid list purpose: must be curatelist or modlist')
         }
-        const record: AppBskyGraphList.Record = {
+        const record: Un$Typed<AppBskyGraphList.Record> = {
           purpose,
           name,
           description,
@@ -128,7 +129,7 @@ export function useListMetadataMutation() {
     async mutationFn({uri, name, description, descriptionFacets, avatar}) {
       const {hostname, rkey} = new AtUri(uri)
       if (!currentAccount) {
-        throw new Error('Not logged in')
+        throw new Error('Not signed in')
       }
       if (currentAccount.did !== hostname) {
         throw new Error('You do not own this list')

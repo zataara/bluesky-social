@@ -12,6 +12,7 @@ import {useSession} from '#/state/session'
 import {atoms as a, useTheme} from '#/alf'
 import * as Toggle from '#/components/forms/Toggle'
 import {Text} from '#/components/Typography'
+import * as bsky from '#/types/bsky'
 
 export function PwiOptOut() {
   const t = useTheme()
@@ -33,13 +34,15 @@ export function PwiOptOut() {
       profile,
       updates: existing => {
         // create labels attr if needed
-        const labels: $Typed<ComAtprotoLabelDefs.SelfLabels> =
-          ComAtprotoLabelDefs.isValidSelfLabels(existing.labels)
-            ? existing.labels
-            : {
-                $type: 'com.atproto.label.defs#selfLabels',
-                values: [],
-              }
+        const labels: $Typed<ComAtprotoLabelDefs.SelfLabels> = bsky.validate(
+          existing.labels,
+          ComAtprotoLabelDefs.validateSelfLabels,
+        )
+          ? existing.labels
+          : {
+              $type: 'com.atproto.label.defs#selfLabels',
+              values: [],
+            }
 
         // toggle the label
         const hasLabel = labels.values.some(

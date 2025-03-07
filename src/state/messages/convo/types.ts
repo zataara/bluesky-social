@@ -11,6 +11,9 @@ export type ConvoParams = {
   convoId: string
   agent: BskyAgent
   events: MessagesEventBus
+  placeholderData?: {
+    convo: ChatBskyConvoDefs.ConvoView
+  }
 }
 
 export enum ConvoStatus {
@@ -138,30 +141,33 @@ type SendMessage = (
   message: ChatBskyConvoSendMessage.InputSchema['message'],
 ) => void
 type FetchMessageHistory = () => Promise<void>
+type MarkConvoAccepted = () => void
 
 export type ConvoStateUninitialized = {
   status: ConvoStatus.Uninitialized
   items: []
-  convo: undefined
+  convo: ChatBskyConvoDefs.ConvoView | undefined
   error: undefined
-  sender: undefined
-  recipients: undefined
+  sender: ChatBskyActorDefs.ProfileViewBasic | undefined
+  recipients: ChatBskyActorDefs.ProfileViewBasic[] | undefined
   isFetchingHistory: false
   deleteMessage: undefined
   sendMessage: undefined
   fetchMessageHistory: undefined
+  markConvoAccepted: undefined
 }
 export type ConvoStateInitializing = {
   status: ConvoStatus.Initializing
   items: []
-  convo: undefined
+  convo: ChatBskyConvoDefs.ConvoView | undefined
   error: undefined
-  sender: undefined
-  recipients: undefined
+  sender: ChatBskyActorDefs.ProfileViewBasic | undefined
+  recipients: ChatBskyActorDefs.ProfileViewBasic[] | undefined
   isFetchingHistory: boolean
   deleteMessage: undefined
   sendMessage: undefined
   fetchMessageHistory: undefined
+  markConvoAccepted: undefined
 }
 export type ConvoStateReady = {
   status: ConvoStatus.Ready
@@ -174,6 +180,7 @@ export type ConvoStateReady = {
   deleteMessage: DeleteMessage
   sendMessage: SendMessage
   fetchMessageHistory: FetchMessageHistory
+  markConvoAccepted: MarkConvoAccepted
 }
 export type ConvoStateBackgrounded = {
   status: ConvoStatus.Backgrounded
@@ -186,6 +193,7 @@ export type ConvoStateBackgrounded = {
   deleteMessage: DeleteMessage
   sendMessage: SendMessage
   fetchMessageHistory: FetchMessageHistory
+  markConvoAccepted: MarkConvoAccepted
 }
 export type ConvoStateSuspended = {
   status: ConvoStatus.Suspended
@@ -198,6 +206,7 @@ export type ConvoStateSuspended = {
   deleteMessage: DeleteMessage
   sendMessage: SendMessage
   fetchMessageHistory: FetchMessageHistory
+  markConvoAccepted: MarkConvoAccepted
 }
 export type ConvoStateError = {
   status: ConvoStatus.Error
@@ -210,6 +219,7 @@ export type ConvoStateError = {
   deleteMessage: undefined
   sendMessage: undefined
   fetchMessageHistory: undefined
+  markConvoAccepted: undefined
 }
 export type ConvoStateDisabled = {
   status: ConvoStatus.Disabled
@@ -222,6 +232,7 @@ export type ConvoStateDisabled = {
   deleteMessage: DeleteMessage
   sendMessage: SendMessage
   fetchMessageHistory: FetchMessageHistory
+  markConvoAccepted: MarkConvoAccepted
 }
 export type ConvoState =
   | ConvoStateUninitialized

@@ -6,6 +6,7 @@ import {
   AppBskyFeedPost,
 } from '@atproto/api'
 
+import * as bsky from '#/types/bsky'
 import {isPostInLanguage} from '../../locale/helpers'
 import {FALLBACK_MARKER_POST} from './feed/home'
 import {ReasonFeedSource} from './feed/types'
@@ -41,6 +42,7 @@ export class FeedViewPostsSlice {
   isFallbackMarker: boolean
   isOrphan: boolean
   rootUri: string
+  feedPostUri: string
 
   constructor(feedPost: FeedViewPost) {
     const {post, reply, reason} = feedPost
@@ -48,6 +50,7 @@ export class FeedViewPostsSlice {
     this.isIncompleteThread = false
     this.isFallbackMarker = false
     this.isOrphan = false
+    this.feedPostUri = post.uri
     if (AppBskyFeedDefs.isPostView(reply?.root)) {
       this.rootUri = reply.root.uri
     } else {
@@ -63,7 +66,10 @@ export class FeedViewPostsSlice {
       this.isFallbackMarker = true
       return
     }
-    if (!AppBskyFeedPost.isValidRecord(post.record)) {
+    if (
+      !AppBskyFeedPost.isRecord(post.record) ||
+      !bsky.validate(post.record, AppBskyFeedPost.validateRecord)
+    ) {
       return
     }
     const parent = reply?.parent
@@ -93,7 +99,8 @@ export class FeedViewPostsSlice {
     }
     if (
       !AppBskyFeedDefs.isPostView(parent) ||
-      !AppBskyFeedPost.isValidRecord(parent.record)
+      !AppBskyFeedPost.isRecord(parent.record) ||
+      !bsky.validate(parent.record, AppBskyFeedPost.validateRecord)
     ) {
       this.isOrphan = true
       return
@@ -134,7 +141,8 @@ export class FeedViewPostsSlice {
     }
     if (
       !AppBskyFeedDefs.isPostView(root) ||
-      !AppBskyFeedPost.isValidRecord(root.record)
+      !AppBskyFeedPost.isRecord(root.record) ||
+      !bsky.validate(root.record, AppBskyFeedPost.validateRecord)
     ) {
       this.isOrphan = true
       return

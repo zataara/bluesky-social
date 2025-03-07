@@ -69,7 +69,9 @@ export let MessageMenu = ({
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     convo
       .deleteMessage(message.id)
-      .then(() => Toast.show(_(msg`Message deleted`)))
+      .then(() =>
+        Toast.show(_(msg({message: 'Message deleted', context: 'toast'}))),
+      )
       .catch(() => Toast.show(_(msg`Failed to delete message`)))
   }, [_, convo, message.id])
 
@@ -138,6 +140,7 @@ export let MessageMenu = ({
       </Menu.Root>
 
       <ReportDialog
+        currentScreen="conversation"
         params={{type: 'convoMessage', convoId: convo.convo.id, message}}
         control={reportControl}
       />

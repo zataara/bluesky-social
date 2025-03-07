@@ -133,7 +133,7 @@ export const DebugModScreen = ({}: NativeStackScreenProps<
     })
     mockedProfile.did = did
     mockedProfile.avatar = 'https://bsky.social/about/images/favicon-32x32.png'
-    // @ts-ignore ProfileViewBasic is close enough -esb
+    // @ts-expect-error ProfileViewBasic is close enough -esb
     mockedProfile.banner =
       'https://bsky.social/about/images/social-card-default-gradient.png'
     return mockedProfile
@@ -379,9 +379,9 @@ export const DebugModScreen = ({}: NativeStackScreenProps<
                           <Toggle.Checkbox />
                           <Toggle.LabelText>Adult disabled</Toggle.LabelText>
                         </Toggle.Item>
-                        <Toggle.Item name="loggedOut" label="Logged out">
+                        <Toggle.Item name="loggedOut" label="Signed out">
                           <Toggle.Checkbox />
-                          <Toggle.LabelText>Logged out</Toggle.LabelText>
+                          <Toggle.LabelText>Signed out</Toggle.LabelText>
                         </Toggle.Item>
                       </View>
                     </Toggle.Group>

@@ -6,6 +6,7 @@ import {
   AppBskyFeedPost,
   AtUri,
   BskyAgent,
+  moderatePost,
   ModerationDecision,
 } from '@atproto/api'
 import {
@@ -27,7 +28,6 @@ import {aggregateUserInterests} from '#/lib/api/feed/utils'
 import {FeedTuner, FeedTunerFn} from '#/lib/api/feed-manip'
 import {DISCOVER_FEED_URI} from '#/lib/constants'
 import {BSKY_FEED_OWNER_DIDS} from '#/lib/constants'
-import {moderatePost_wrapped as moderatePost} from '#/lib/moderatePost_wrapped'
 import {logger} from '#/logger'
 import {STALE} from '#/state/queries'
 import {DEFAULT_LOGGED_OUT_PREFERENCES} from '#/state/queries/preferences/const'
@@ -44,11 +44,12 @@ import {
 } from './util'
 
 type ActorDid = string
-type AuthorFilter =
+export type AuthorFilter =
   | 'posts_with_replies'
   | 'posts_no_replies'
   | 'posts_and_author_threads'
   | 'posts_with_media'
+  | 'posts_with_video'
 type FeedUri = string
 type ListUri = string
 
@@ -61,6 +62,7 @@ export type FeedDescriptor =
 export interface FeedParams {
   mergeFeedEnabled?: boolean
   mergeFeedSources?: string[]
+  feedCacheKey?: 'discover' | 'explore' | undefined
 }
 
 type RQPageParam = {cursor: string | undefined; api: FeedAPI} | undefined
@@ -88,6 +90,7 @@ export interface FeedPostSlice {
   isIncompleteThread: boolean
   isFallbackMarker: boolean
   feedContext: string | undefined
+  feedPostUri: string
   reason?:
     | AppBskyFeedDefs.ReasonRepost
     | AppBskyFeedDefs.ReasonPin
@@ -329,6 +332,7 @@ export function usePostFeedQuery(
                     isFallbackMarker: slice.isFallbackMarker,
                     feedContext: slice.feedContext,
                     reason: slice.reason,
+                    feedPostUri: slice.feedPostUri,
                     items: slice.items.map((item, i) => {
                       const feedPostSliceItem: FeedPostSliceItem = {
                         _reactKey: `${slice._reactKey}-${i}-${item.post.uri}`,

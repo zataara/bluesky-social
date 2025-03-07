@@ -32,6 +32,7 @@ import {
 import {RouteParams, State} from '#/lib/routes/types'
 import {attachRouteToLogEvents, logEvent} from '#/lib/statsig/statsig'
 import {bskyTitle} from '#/lib/strings/headings'
+import {logger} from '#/logger'
 import {isNative, isWeb} from '#/platform/detection'
 import {useModalControls} from '#/state/modals'
 import {useUnreadNotifications} from '#/state/queries/notifications/unread'
@@ -68,8 +69,10 @@ import {SharedPreferencesTesterScreen} from '#/screens/E2E/SharedPreferencesTest
 import HashtagScreen from '#/screens/Hashtag'
 import {MessagesScreen} from '#/screens/Messages/ChatList'
 import {MessagesConversationScreen} from '#/screens/Messages/Conversation'
+import {MessagesInboxScreen} from '#/screens/Messages/Inbox'
 import {MessagesSettingsScreen} from '#/screens/Messages/Settings'
 import {ModerationScreen} from '#/screens/Moderation'
+import {Screen as ModerationInteractionSettings} from '#/screens/ModerationInteractionSettings'
 import {PostLikedByScreen} from '#/screens/Post/PostLikedBy'
 import {PostQuotesScreen} from '#/screens/Post/PostQuotes'
 import {PostRepostedByScreen} from '#/screens/Post/PostRepostedBy'
@@ -86,9 +89,11 @@ import {
   StarterPackScreenShort,
 } from '#/screens/StarterPack/StarterPackScreen'
 import {Wizard} from '#/screens/StarterPack/Wizard'
+import {VideoFeed} from '#/screens/VideoFeed'
 import {useTheme} from '#/alf'
 import {router} from '#/routes'
 import {Referrer} from '../modules/expo-bluesky-swiss-army'
+import {ProfileSearchScreen} from './screens/Profile/ProfileSearch'
 import {AboutSettingsScreen} from './screens/Settings/AboutSettings'
 import {AccessibilitySettingsScreen} from './screens/Settings/AccessibilitySettings'
 import {AccountSettingsScreen} from './screens/Settings/AccountSettings'
@@ -155,6 +160,14 @@ function commonScreens(Stack: typeof HomeTab, unreadCountLabel?: string) {
         options={{title: title(msg`Blocked Accounts`), requireAuth: true}}
       />
       <Stack.Screen
+        name="ModerationInteractionSettings"
+        getComponent={() => ModerationInteractionSettings}
+        options={{
+          title: title(msg`Post Interaction Settings`),
+          requireAuth: true,
+        }}
+      />
+      <Stack.Screen
         name="Settings"
         getComponent={() => SettingsScreen}
         options={{title: title(msg`Settings`), requireAuth: true}}
@@ -196,6 +209,13 @@ function commonScreens(Stack: typeof HomeTab, unreadCountLabel?: string) {
         name="ProfileList"
         getComponent={() => ProfileListScreen}
         options={{title: title(msg`List`), requireAuth: true}}
+      />
+      <Stack.Screen
+        name="ProfileSearch"
+        getComponent={() => ProfileSearchScreen}
+        options={({route}) => ({
+          title: title(msg`Search @${route.params.name}'s posts`),
+        })}
       />
       <Stack.Screen
         name="PostThread"
@@ -393,6 +413,11 @@ function commonScreens(Stack: typeof HomeTab, unreadCountLabel?: string) {
         options={{title: title(msg`Chat settings`), requireAuth: true}}
       />
       <Stack.Screen
+        name="MessagesInbox"
+        getComponent={() => MessagesInboxScreen}
+        options={{title: title(msg`Chat request inbox`), requireAuth: true}}
+      />
+      <Stack.Screen
         name="NotificationSettings"
         getComponent={() => NotificationSettingsScreen}
         options={{title: title(msg`Notification settings`), requireAuth: true}}
@@ -421,6 +446,14 @@ function commonScreens(Stack: typeof HomeTab, unreadCountLabel?: string) {
         name="StarterPackEdit"
         getComponent={() => Wizard}
         options={{title: title(msg`Edit your starter pack`), requireAuth: true}}
+      />
+      <Stack.Screen
+        name="VideoFeed"
+        getComponent={() => VideoFeed}
+        options={{
+          title: title(msg`Video Feed`),
+          requireAuth: true,
+        }}
       />
     </>
   )
@@ -703,15 +736,16 @@ function RoutesContainer({children}: React.PropsWithChildren<{}>) {
       linking={LINKING}
       theme={theme}
       onStateChange={() => {
-        const routeName = getCurrentRouteName()
-        if (routeName === 'Notifications') {
-          logEvent('router:navigate:notifications', {})
-        }
+        logger.metric('router:navigate', {
+          from: prevLoggedRouteName.current,
+        })
+        prevLoggedRouteName.current = getCurrentRouteName()
       }}
       onReady={() => {
         attachRouteToLogEvents(getCurrentRouteName)
         logModuleInitTime()
         onReady()
+        logger.metric('router:navigate', {})
       }}>
       {children}
     </NavigationContainer>

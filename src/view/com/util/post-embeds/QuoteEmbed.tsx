@@ -14,6 +14,7 @@ import {
   AppBskyEmbedVideo,
   AppBskyFeedDefs,
   AppBskyFeedPost,
+  moderatePost,
   ModerationDecision,
   RichText as RichTextAPI,
 } from '@atproto/api'
@@ -26,7 +27,6 @@ import {useQueryClient} from '@tanstack/react-query'
 import {HITSLOP_20} from '#/lib/constants'
 import {usePalette} from '#/lib/hooks/usePalette'
 import {InfoCircleIcon} from '#/lib/icons'
-import {moderatePost_wrapped as moderatePost} from '#/lib/moderatePost_wrapped'
 import {makeProfileLink} from '#/lib/routes/links'
 import {s} from '#/lib/styles'
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
@@ -36,7 +36,7 @@ import {useSession} from '#/state/session'
 import {atoms as a, useTheme} from '#/alf'
 import {RichText} from '#/components/RichText'
 import {SubtleWebHover} from '#/components/SubtleWebHover'
-import * as atp from '#/types/atproto'
+import * as bsky from '#/types/bsky'
 import {ContentHider} from '../../../../components/moderation/ContentHider'
 import {PostAlerts} from '../../../../components/moderation/PostAlerts'
 import {Link} from '../Link'
@@ -173,7 +173,7 @@ export function QuoteEmbed({
 
   const richText = React.useMemo(() => {
     if (
-      !atp.dangerousIsType<AppBskyFeedPost.Record>(
+      !bsky.dangerousIsType<AppBskyFeedPost.Record>(
         quote.record,
         AppBskyFeedPost.isRecord,
       )

@@ -31,7 +31,7 @@ import {Link} from '#/components/Link'
 import {MediaInsetBorder} from '#/components/MediaInsetBorder'
 import * as Menu from '#/components/Menu'
 import {ProfileHoverCard} from '#/components/ProfileHoverCard'
-import * as atp from '#/types/atproto'
+import * as bsky from '#/types/bsky'
 import {openCamera, openCropper, openPicker} from '../../../lib/media/picker'
 
 export type UserAvatarType = 'user' | 'algo' | 'list' | 'labeler'
@@ -44,6 +44,7 @@ interface BaseUserAvatarProps {
 }
 
 interface UserAvatarProps extends BaseUserAvatarProps {
+  type: UserAvatarType
   moderation?: ModerationUI
   usePlainRNImage?: boolean
   onLoad?: () => void
@@ -55,8 +56,9 @@ interface EditableUserAvatarProps extends BaseUserAvatarProps {
 
 interface PreviewableUserAvatarProps extends BaseUserAvatarProps {
   moderation?: ModerationUI
-  profile: atp.profile.AnyProfileView
+  profile: bsky.profile.AnyProfileView
   disableHoverCard?: boolean
+  disableNavigation?: boolean
   onBeforePress?: () => void
 }
 
@@ -243,13 +245,7 @@ let UserAvatar = ({
           onLoad={onLoad}
         />
       )}
-      <MediaInsetBorder
-        style={[
-          {
-            borderRadius: aviStyle.borderRadius,
-          },
-        ]}
-      />
+      <MediaInsetBorder style={[{borderRadius: aviStyle.borderRadius}]} />
       {alert}
     </View>
   ) : (
@@ -398,7 +394,7 @@ let EditableUserAvatar = ({
             <Menu.Group>
               <Menu.Item
                 testID="changeAvatarRemoveBtn"
-                label={_(`Remove Avatar`)}
+                label={_(msg`Remove Avatar`)}
                 onPress={onRemoveAvatar}>
                 <Menu.ItemText>
                   <Trans>Remove Avatar</Trans>
@@ -419,6 +415,7 @@ let PreviewableUserAvatar = ({
   moderation,
   profile,
   disableHoverCard,
+  disableNavigation,
   onBeforePress,
   ...rest
 }: PreviewableUserAvatarProps): React.ReactNode => {
@@ -430,18 +427,31 @@ let PreviewableUserAvatar = ({
     precacheProfile(queryClient, profile)
   }, [profile, queryClient, onBeforePress])
 
+  const avatarEl = (
+    <UserAvatar
+      avatar={profile.avatar}
+      moderation={moderation}
+      type={profile.associated?.labeler ? 'labeler' : 'user'}
+      {...rest}
+    />
+  )
+
   return (
     <ProfileHoverCard did={profile.did} disable={disableHoverCard}>
-      <Link
-        label={_(msg`${profile.displayName || profile.handle}'s avatar`)}
-        accessibilityHint={_(msg`Opens this profile`)}
-        to={makeProfileLink({
-          did: profile.did,
-          handle: profile.handle,
-        })}
-        onPress={onPress}>
-        <UserAvatar avatar={profile.avatar} moderation={moderation} {...rest} />
-      </Link>
+      {disableNavigation ? (
+        avatarEl
+      ) : (
+        <Link
+          label={_(msg`${profile.displayName || profile.handle}'s avatar`)}
+          accessibilityHint={_(msg`Opens this profile`)}
+          to={makeProfileLink({
+            did: profile.did,
+            handle: profile.handle,
+          })}
+          onPress={onPress}>
+          {avatarEl}
+        </Link>
+      )}
     </ProfileHoverCard>
   )
 }

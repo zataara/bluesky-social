@@ -8,8 +8,10 @@ import {
   AtUri,
   BskyAgent,
   ComAtprotoRepoUploadBlob,
+  Un$Typed,
 } from '@atproto/api'
 import {
+  keepPreviousData,
   QueryClient,
   useMutation,
   useQuery,
@@ -28,14 +30,14 @@ import {
   useUnstableProfileViewCache,
 } from '#/state/queries/unstable-profile-cache'
 import * as userActionHistory from '#/state/userActionHistory'
-import * as atp from '#/types/atproto'
+import * as bsky from '#/types/bsky'
 import {updateProfileShadow} from '../cache/profile-shadow'
 import {useAgent, useSession} from '../session'
 import {
   ProgressGuideAction,
   useProgressGuideControls,
 } from '../shell/progress-guide'
-import {RQKEY as RQKEY_LIST_CONVOS} from './messages/list-conversations'
+import {RQKEY_ROOT as RQKEY_LIST_CONVOS} from './messages/list-conversations'
 import {RQKEY as RQKEY_MY_BLOCKED} from './my-blocked-accounts'
 import {RQKEY as RQKEY_MY_MUTED} from './my-muted-accounts'
 
@@ -83,7 +85,13 @@ export function useProfileQuery({
   })
 }
 
-export function useProfilesQuery({handles}: {handles: string[]}) {
+export function useProfilesQuery({
+  handles,
+  maintainData,
+}: {
+  handles: string[]
+  maintainData?: boolean
+}) {
   const agent = useAgent()
   return useQuery({
     staleTime: STALE.MINUTES.FIVE,
@@ -92,6 +100,7 @@ export function useProfilesQuery({handles}: {handles: string[]}) {
       const res = await agent.getProfiles({actors: handles})
       return res.data
     },
+    placeholderData: maintainData ? keepPreviousData : undefined,
   })
 }
 
@@ -117,8 +126,10 @@ export function usePrefetchProfileQuery() {
 interface ProfileUpdateParams {
   profile: AppBskyActorDefs.ProfileViewDetailed
   updates:
-    | AppBskyActorProfile.Record
-    | ((existing: AppBskyActorProfile.Record) => AppBskyActorProfile.Record)
+    | Un$Typed<AppBskyActorProfile.Record>
+    | ((
+        existing: Un$Typed<AppBskyActorProfile.Record>,
+      ) => Un$Typed<AppBskyActorProfile.Record>)
   newUserAvatar?: RNImage | undefined | null
   newUserBanner?: RNImage | undefined | null
   checkCommitted?: (res: AppBskyActorGetProfile.Response) => boolean
@@ -155,29 +166,29 @@ export function useProfileUpdateMutation() {
         )
       }
       await agent.upsertProfile(async existing => {
-        existing = existing || {}
+        let next: Un$Typed<AppBskyActorProfile.Record> = existing || {}
         if (typeof updates === 'function') {
-          existing = updates(existing)
+          next = updates(next)
         } else {
-          existing.displayName = updates.displayName
-          existing.description = updates.description
+          next.displayName = updates.displayName
+          next.description = updates.description
           if ('pinnedPost' in updates) {
-            existing.pinnedPost = updates.pinnedPost
+            next.pinnedPost = updates.pinnedPost
           }
         }
         if (newUserAvatarPromise) {
           const res = await newUserAvatarPromise
-          existing.avatar = res.data.blob
+          next.avatar = res.data.blob
         } else if (newUserAvatar === null) {
-          existing.avatar = undefined
+          next.avatar = undefined
         }
         if (newUserBannerPromise) {
           const res = await newUserBannerPromise
-          existing.banner = res.data.blob
+          next.banner = res.data.blob
         } else if (newUserBanner === null) {
-          existing.banner = undefined
+          next.banner = undefined
         }
-        return existing
+        return next
       })
       await whenAppViewReady(
         agent,
@@ -222,7 +233,7 @@ export function useProfileUpdateMutation() {
 }
 
 export function useProfileFollowMutationQueue(
-  profile: Shadow<atp.profile.AnyProfileView>,
+  profile: Shadow<bsky.profile.AnyProfileView>,
   logContext: LogEvents['profile:follow']['logContext'] &
     LogEvents['profile:follow']['logContext'],
 ) {
@@ -296,7 +307,7 @@ export function useProfileFollowMutationQueue(
 
 function useProfileFollowMutation(
   logContext: LogEvents['profile:follow']['logContext'],
-  profile: Shadow<atp.profile.AnyProfileView>,
+  profile: Shadow<bsky.profile.AnyProfileView>,
 ) {
   const {currentAccount} = useSession()
   const agent = useAgent()
@@ -315,8 +326,10 @@ function useProfileFollowMutation(
         didBecomeMutual: profile.viewer
           ? Boolean(profile.viewer.followedBy)
           : undefined,
-        // @ts-expect-error — this is optional
-        followeeClout: toClout(profile?.followersCount),
+        followeeClout:
+          'followersCount' in profile
+            ? toClout(profile.followersCount)
+            : undefined,
         followerClout: toClout(ownProfile?.followersCount),
       })
       return await agent.follow(did)
@@ -337,7 +350,7 @@ function useProfileUnfollowMutation(
 }
 
 export function useProfileMuteMutationQueue(
-  profile: Shadow<atp.profile.AnyProfileView>,
+  profile: Shadow<bsky.profile.AnyProfileView>,
 ) {
   const queryClient = useQueryClient()
   const did = profile.did
@@ -412,7 +425,7 @@ function useProfileUnmuteMutation() {
 }
 
 export function useProfileBlockMutationQueue(
-  profile: Shadow<atp.profile.AnyProfileView>,
+  profile: Shadow<bsky.profile.AnyProfileView>,
 ) {
   const queryClient = useQueryClient()
   const did = profile.did
@@ -443,7 +456,7 @@ export function useProfileBlockMutationQueue(
       updateProfileShadow(queryClient, did, {
         blockingUri: finalBlockingUri,
       })
-      queryClient.invalidateQueries({queryKey: RQKEY_LIST_CONVOS})
+      queryClient.invalidateQueries({queryKey: [RQKEY_LIST_CONVOS]})
     },
   })
 

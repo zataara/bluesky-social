@@ -4,7 +4,7 @@ import {useLingui} from '@lingui/react'
 
 import {Shadow} from '#/state/cache/types'
 import {useProfileFollowMutationQueue} from '#/state/queries/profile'
-import * as atp from '#/types/atproto'
+import * as bsky from '#/types/bsky'
 import {Button, ButtonType} from '../util/forms/Button'
 import * as Toast from '../util/Toast'
 
@@ -14,12 +14,14 @@ export function FollowButton({
   profile,
   labelStyle,
   logContext,
+  onFollow,
 }: {
   unfollowedType?: ButtonType
   followedType?: ButtonType
-  profile: Shadow<atp.profile.AnyProfileView>
+  profile: Shadow<bsky.profile.AnyProfileView>
   labelStyle?: StyleProp<TextStyle>
   logContext: 'ProfileCard' | 'StarterPackProfilesList'
+  onFollow?: () => void
 }) {
   const [queueFollow, queueUnfollow] = useProfileFollowMutationQueue(
     profile,
@@ -30,6 +32,7 @@ export function FollowButton({
   const onPressFollow = async () => {
     try {
       await queueFollow()
+      onFollow?.()
     } catch (e: any) {
       if (e?.name !== 'AbortError') {
         Toast.show(_(msg`An issue occurred, please try again.`), 'xmark')

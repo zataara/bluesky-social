@@ -33,6 +33,7 @@ import {precacheResolvedUri} from './resolve-uri'
 
 export type FeedSourceFeedInfo = {
   type: 'feed'
+  view?: AppBskyFeedDefs.GeneratorView
   uri: string
   feedDescriptor: FeedDescriptor
   route: {
@@ -48,10 +49,12 @@ export type FeedSourceFeedInfo = {
   creatorHandle: string
   likeCount: number | undefined
   likeUri: string | undefined
+  contentMode: AppBskyFeedDefs.GeneratorView['contentMode']
 }
 
 export type FeedSourceListInfo = {
   type: 'list'
+  view?: AppBskyGraphDefs.ListView
   uri: string
   feedDescriptor: FeedDescriptor
   route: {
@@ -65,6 +68,7 @@ export type FeedSourceListInfo = {
   description: RichText
   creatorDid: string
   creatorHandle: string
+  contentMode: undefined
 }
 
 export type FeedSourceInfo = FeedSourceFeedInfo | FeedSourceListInfo
@@ -91,6 +95,7 @@ export function hydrateFeedGenerator(
 
   return {
     type: 'feed',
+    view,
     uri: view.uri,
     feedDescriptor: `feedgen|${view.uri}`,
     cid: view.cid,
@@ -111,6 +116,7 @@ export function hydrateFeedGenerator(
     creatorHandle: view.creator.handle,
     likeCount: view.likeCount,
     likeUri: view.viewer?.like,
+    contentMode: view.contentMode,
   }
 }
 
@@ -123,6 +129,7 @@ export function hydrateList(view: AppBskyGraphDefs.ListView): FeedSourceInfo {
 
   return {
     type: 'list',
+    view,
     uri: view.uri,
     feedDescriptor: `list|${view.uri}`,
     route: {
@@ -141,6 +148,7 @@ export function hydrateList(view: AppBskyGraphDefs.ListView): FeedSourceInfo {
     displayName: view.name
       ? sanitizeDisplayName(view.name)
       : `User List by ${sanitizeHandle(view.creator.handle, '@')}`,
+    contentMode: undefined,
   }
 }
 
@@ -326,7 +334,7 @@ export function useSearchPopularFeedsMutation() {
       if (moderationOpts) {
         return res.data.feeds.filter(feed => {
           const decision = moderateFeedGenerator(feed, moderationOpts)
-          return !decision.ui('contentList').filter
+          return !decision.ui('contentMedia').blur
         })
       }
 
@@ -367,7 +375,7 @@ export function usePopularFeedsSearch({
     select(data) {
       return data.filter(feed => {
         const decision = moderateFeedGenerator(feed, moderationOpts!)
-        return !decision.ui('contentList').filter
+        return !decision.ui('contentMedia').blur
       })
     },
   })
@@ -399,6 +407,7 @@ const PWI_DISCOVER_FEED_STUB: SavedFeedSourceInfo = {
     id: 'pwi-discover',
     ...DISCOVER_SAVED_FEED,
   },
+  contentMode: undefined,
 }
 
 const pinnedFeedInfosQueryKeyRoot = 'pinnedFeedsInfos'
@@ -485,6 +494,7 @@ export function usePinnedFeedsInfos() {
             likeCount: 0,
             likeUri: '',
             savedFeed: pinnedItem,
+            contentMode: undefined,
           })
         }
       }

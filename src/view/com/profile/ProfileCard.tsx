@@ -24,7 +24,7 @@ import {
   shouldShowKnownFollowers,
 } from '#/components/KnownFollowers'
 import * as Pills from '#/components/Pills'
-import * as atp from '#/types/atproto'
+import * as bsky from '#/types/bsky'
 import {Link} from '../util/Link'
 import {Text} from '../util/text/Text'
 import {PreviewableUserAvatar} from '../util/UserAvatar'
@@ -42,12 +42,12 @@ export function ProfileCard({
   showKnownFollowers,
 }: {
   testID?: string
-  profile: atp.profile.AnyProfileView
+  profile: bsky.profile.AnyProfileView
   noModFilter?: boolean
   noBg?: boolean
   noBorder?: boolean
   renderButton?: (
-    profile: Shadow<atp.profile.AnyProfileView>,
+    profile: Shadow<bsky.profile.AnyProfileView>,
   ) => React.ReactNode
   onPress?: () => void
   style?: StyleProp<ViewStyle>
@@ -77,6 +77,7 @@ export function ProfileCard({
     showKnownFollowers &&
     shouldShowKnownFollowers(profile.viewer?.knownFollowers) &&
     moderationOpts
+  const hasDescription = 'description' in profile
 
   return (
     <Link
@@ -127,35 +128,29 @@ export function ProfileCard({
           <View style={styles.layoutButton}>{renderButton(profile)}</View>
         ) : undefined}
       </View>
-      {atp.profile.isView(profile) || atp.profile.isDetailedView(profile) ? (
-        <>
-          {profile.description || knownFollowersVisible ? (
-            <View style={styles.details}>
-              {profile.description ? (
-                <Text emoji style={pal.text} numberOfLines={4}>
-                  {profile.description as string}
-                </Text>
-              ) : null}
-              {knownFollowersVisible ? (
-                <View
-                  style={[
-                    a.flex_row,
-                    a.align_center,
-                    a.gap_sm,
-                    !!profile.description && a.mt_md,
-                  ]}>
-                  {atp.profile.isDetailedView(profile) && (
-                    <KnownFollowers
-                      minimal
-                      profile={profile}
-                      moderationOpts={moderationOpts}
-                    />
-                  )}
-                </View>
-              ) : null}
+      {hasDescription || knownFollowersVisible ? (
+        <View style={styles.details}>
+          {hasDescription && profile.description ? (
+            <Text emoji style={pal.text} numberOfLines={4}>
+              {profile.description as string}
+            </Text>
+          ) : null}
+          {knownFollowersVisible ? (
+            <View
+              style={[
+                a.flex_row,
+                a.align_center,
+                a.gap_sm,
+                !!hasDescription && a.mt_md,
+              ]}>
+              <KnownFollowers
+                minimal
+                profile={profile}
+                moderationOpts={moderationOpts}
+              />
             </View>
           ) : null}
-        </>
+        </View>
       ) : null}
     </Link>
   )
@@ -191,6 +186,7 @@ export function ProfileCardWithFollowBtn({
   noBg,
   noBorder,
   onPress,
+  onFollow,
   logContext = 'ProfileCard',
   showKnownFollowers,
 }: {
@@ -198,6 +194,7 @@ export function ProfileCardWithFollowBtn({
   noBg?: boolean
   noBorder?: boolean
   onPress?: () => void
+  onFollow?: () => void
   logContext?: 'ProfileCard' | 'StarterPackProfilesList'
   showKnownFollowers?: boolean
 }) {
@@ -213,7 +210,11 @@ export function ProfileCardWithFollowBtn({
         isMe
           ? undefined
           : profileShadow => (
-              <FollowButton profile={profileShadow} logContext={logContext} />
+              <FollowButton
+                profile={profileShadow}
+                logContext={logContext}
+                onFollow={onFollow}
+              />
             )
       }
       onPress={onPress}
